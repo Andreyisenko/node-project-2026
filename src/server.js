@@ -1,10 +1,14 @@
 import express from 'express';
-import dotenv from 'dotenv';
+// import dotenv from 'dotenv';
 import pino from 'pino-http';
 import cors from 'cors';
+import { getEnvVar } from './utils/getEnvVar.js';
+// dotenv.config();
+// console.log(dotenv.config());
+// console.log(+process.env.PORT);
+// console.log(dotenv.config());
 
-dotenv.config();
-const PORT = Number(process.env.PORT);
+const PORT = Number(getEnvVar('PORT', 3000));
 const student = {
   id: 23,
   name: 'John Doe',
@@ -24,7 +28,12 @@ export const startServer = () => {
   //       },
   //     }),
   //   );
-
+  app.use('/bob', (req, res) => {
+    const sale = [1, 3, 4, 5, 6];
+    res.json({
+      data: sale,
+    });
+  });
   app.use((req, res, next) => {
     console.log(`Time: ${new Date().toLocaleString()}`);
     next();
@@ -47,15 +56,15 @@ export const startServer = () => {
     });
   });
 
-  // app.use((req, res, next) => {
-  //   res.status(404).json({
-  //     message: 'Not found',
-  //   });
-  // });
-
+  app.use((req, res, next) => {
+    res.status(404).json({
+      message: 'Not found',
+    });
+  });
   app.get('/error', (req, res, next) => {
     next(new Error('Test error'));
   });
+
   app.use((err, req, res, next) => {
     res.status(500).json({
       message: 'Something went wrong',
