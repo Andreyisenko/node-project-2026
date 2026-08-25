@@ -7,4 +7,3 @@ const boodstrap = async () => {
 };
 
 boodstrap();
-console.log('221');

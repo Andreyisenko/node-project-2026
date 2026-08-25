@@ -3,19 +3,21 @@ import express from 'express';
 import pino from 'pino-http';
 import cors from 'cors';
 import { getEnvVar } from './utils/getEnvVar.js';
+// import StudentCollection from './db/models/student.js';
+import { getStudents, getStudentsById } from './services/Students.js';
 // dotenv.config();
 // console.log(dotenv.config());
 // console.log(+process.env.PORT);
 // console.log(dotenv.config());
 
 const PORT = Number(getEnvVar('PORT', 3000));
-const student = {
-  id: 23,
-  name: 'John Doe',
-  age: 16,
-  gender: 'male',
-  onDuty: false,
-};
+// const student = {
+//   id: 23,
+//   name: 'John Doe',
+//   age: 16,
+//   gender: 'male',
+//   onDuty: false,
+// };
 
 export const startServer = () => {
   const app = express();
@@ -28,12 +30,6 @@ export const startServer = () => {
   //       },
   //     }),
   //   );
-  app.use('/bob', (req, res) => {
-    const sale = [1, 3, 4, 5, 6];
-    res.json({
-      data: sale,
-    });
-  });
   app.use((req, res, next) => {
     console.log(`Time: ${new Date().toLocaleString()}`);
     next();
@@ -44,9 +40,31 @@ export const startServer = () => {
       message: 'Good morning everyone',
     });
   });
-  app.get('/student', (req, res) => {
+  app.get('/api/student', async (req, res) => {
+    const data = await getStudents();
     res.json({
-      data: student,
+      status: 200,
+      message: 'Successfully find students',
+      data: data,
+    });
+  });
+  app.get('/api/student/:id', async (req, res) => {
+    const { id } = req.params;
+
+    const data = await getStudentsById(id);
+
+    console.log(data);
+    if (!data) {
+      return res.status(404).json({
+        status: 404,
+        message: `Student whit id ${id} Not Found `,
+      });
+    }
+
+    res.json({
+      status: 200,
+      message: `Successfully find students by id ${id} `,
+      data,
     });
   });
 
@@ -60,9 +78,6 @@ export const startServer = () => {
     res.status(404).json({
       message: 'Not found',
     });
-  });
-  app.get('/error', (req, res, next) => {
-    next(new Error('Test error'));
   });
 
   app.use((err, req, res, next) => {
