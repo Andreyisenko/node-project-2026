@@ -4,11 +4,7 @@ import pino from 'pino-http';
 import cors from 'cors';
 import { getEnvVar } from './utils/getEnvVar.js';
 // import StudentCollection from './db/models/student.js';
-import { getStudents, getStudentsById } from './services/Students.js';
-// dotenv.config();
-// console.log(dotenv.config());
-// console.log(+process.env.PORT);
-// console.log(dotenv.config());
+import { getStudents, getStudentsById } from './services/students.js';
 
 const PORT = Number(getEnvVar('PORT', 3000));
 // const student = {
